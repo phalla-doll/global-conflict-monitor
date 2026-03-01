@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Map, { Marker, Popup, MapRef } from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { mockData, IntelligenceEvent } from '../lib/mockData';
 
 interface MapSectionProps {
   onEventClick: (id: string) => void;
@@ -19,26 +20,18 @@ export function MapSection({ onEventClick, showOverlays = true, focusEventId }: 
     airActivity: false,
   });
   
-  const [hoverInfo, setHoverInfo] = useState<{x: number, y: number, event: any} | null>(null);
-
-  const mockEvent = {
-    id: 'event-1',
-    lat: 55.7558,
-    lng: 37.6173,
-    country: 'RUSSIA VS UKRAINE',
-    escalation: 7.4,
-    type: 'ARTILLERY',
-    time: '12m ago',
-    isNew: true
-  };
+  const [hoverInfo, setHoverInfo] = useState<{x: number, y: number, event: IntelligenceEvent} | null>(null);
 
   useEffect(() => {
-    if (focusEventId === mockEvent.id && mapRef.current) {
-      mapRef.current.flyTo({
-        center: [mockEvent.lng, mockEvent.lat],
-        zoom: 6,
-        duration: 2000
-      });
+    if (focusEventId && mapRef.current) {
+      const eventToFocus = mockData.find(e => e.id === focusEventId);
+      if (eventToFocus) {
+        mapRef.current.flyTo({
+          center: [eventToFocus.lng, eventToFocus.lat],
+          zoom: 6,
+          duration: 2000
+        });
+      }
     }
   }, [focusEventId]);
 
@@ -55,20 +48,25 @@ export function MapSection({ onEventClick, showOverlays = true, focusEventId }: 
         mapLib={maplibregl}
         interactiveLayerIds={['clusters']}
       >
-        {/* Example marker */}
-        <Marker longitude={mockEvent.lng} latitude={mockEvent.lat} anchor="center">
-          <div className="relative">
-            {mockEvent.isNew && (
-              <div className="absolute -inset-1 bg-[#FF3B30] rounded-full animate-ping opacity-75" />
-            )}
-            <div 
-              className="relative w-3 h-3 bg-[#FF3B30] rounded-full cursor-pointer hover:ring-2 ring-white transition-all"
-              onClick={() => onEventClick(mockEvent.id)}
-              onMouseEnter={(e) => setHoverInfo({ x: e.clientX, y: e.clientY, event: mockEvent })}
-              onMouseLeave={() => setHoverInfo(null)}
-            />
-          </div>
-        </Marker>
+        {/* Render all markers from mockData */}
+        {mockData.map((event) => (
+          <Marker key={event.id} longitude={event.lng} latitude={event.lat} anchor="center">
+            <div className="relative">
+              {event.isNew && (
+                <div className="absolute -inset-1 bg-[#FF3B30] rounded-full animate-ping opacity-75" />
+              )}
+              <div 
+                className={`relative w-3 h-3 rounded-full cursor-pointer hover:ring-2 ring-white transition-all ${
+                  event.escalation > 7 ? 'bg-[#FF3B30]' : 
+                  event.escalation >= 5 ? 'bg-[#FF9F0A]' : 'bg-white'
+                }`}
+                onClick={() => onEventClick(event.id)}
+                onMouseEnter={(e) => setHoverInfo({ x: e.clientX, y: e.clientY, event })}
+                onMouseLeave={() => setHoverInfo(null)}
+              />
+            </div>
+          </Marker>
+        ))}
       </Map>
 
       {/* Custom Tooltip */}

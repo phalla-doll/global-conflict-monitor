@@ -1,71 +1,17 @@
 import { useState } from 'react';
+import { mockData, IntelligenceEvent } from '../lib/mockData';
 
 interface IntelligenceGridProps {
   onEventClick: (id: string) => void;
   selectedEventId: string | null;
 }
 
-const mockData = [
-  {
-    id: 'event-1',
-    category: 'ACTIVE',
-    country: 'RUSSIA VS UKRAINE',
-    escalation: 7.4,
-    headline: 'Intensified artillery exchanges along eastern front',
-    summary: 'AI Analysis indicates a 40% increase in artillery fire over the last 12 hours, suggesting preparation for localized offensives.',
-    actors: 'Russia vs Ukraine',
-    casualties: 14,
-    time: '12m ago',
-    source: 'Reuters',
-    isNew: true
-  },
-  {
-    id: 'event-2',
-    category: 'ESCALATION',
-    country: 'SOUTH CHINA SEA',
-    escalation: 6.2,
-    headline: 'Naval vessels shadow foreign carrier group',
-    summary: 'Multiple fast attack craft observed shadowing carrier strike group. Radio warnings issued but no direct engagement.',
-    actors: 'China vs US',
-    casualties: 0,
-    time: '45m ago',
-    source: 'OSINT',
-    isNew: false
-  },
-  {
-    id: 'event-3',
-    category: 'POLITICAL',
-    country: 'MIDDLE EAST',
-    escalation: 4.8,
-    headline: 'Emergency diplomatic summit called',
-    summary: 'Regional leaders convene following recent border incursions. Sanctions package being drafted.',
-    actors: 'Multiple',
-    casualties: 0,
-    time: '2h ago',
-    source: 'Al Jazeera',
-    isNew: false
-  },
-  {
-    id: 'event-4',
-    category: 'ANALYSIS',
-    country: 'GLOBAL',
-    escalation: 5.5,
-    headline: 'Supply chain disruption index rises',
-    summary: 'Maritime shipping routes showing increased deviation patterns due to localized conflict risks.',
-    actors: 'N/A',
-    casualties: 0,
-    time: '4h ago',
-    source: 'Internal',
-    isNew: false
-  }
-];
-
 export function IntelligenceGrid({ onEventClick, selectedEventId }: IntelligenceGridProps) {
   const columns = [
-    { id: 'ACTIVE', label: 'Active Conflicts', count: 12 },
-    { id: 'ESCALATION', label: 'Escalation', count: 7 },
-    { id: 'POLITICAL', label: 'Political', count: 15 },
-    { id: 'ANALYSIS', label: 'Analysis', count: 9 },
+    { id: 'ACTIVE', label: 'Active Conflicts', count: mockData.filter(d => d.category === 'ACTIVE').length },
+    { id: 'ESCALATION', label: 'Escalation', count: mockData.filter(d => d.category === 'ESCALATION').length },
+    { id: 'POLITICAL', label: 'Political', count: mockData.filter(d => d.category === 'POLITICAL').length },
+    { id: 'ANALYSIS', label: 'Analysis', count: mockData.filter(d => d.category === 'ANALYSIS').length },
   ];
 
   const getBorderColor = (score: number) => {
