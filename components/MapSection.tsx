@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import Map, { Marker, Popup } from 'react-map-gl/maplibre';
+import { useState, useRef, useEffect } from 'react';
+import Map, { Marker, Popup, MapRef } from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapSectionProps {
   onEventClick: (id: string) => void;
   showOverlays?: boolean;
+  focusEventId?: string | null;
 }
 
-export function MapSection({ onEventClick, showOverlays = true }: MapSectionProps) {
+export function MapSection({ onEventClick, showOverlays = true, focusEventId }: MapSectionProps) {
+  const mapRef = useRef<MapRef>(null);
   const [layers, setLayers] = useState({
     conflictZones: true,
     militaryActivity: false,
@@ -30,9 +32,20 @@ export function MapSection({ onEventClick, showOverlays = true }: MapSectionProp
     isNew: true
   };
 
+  useEffect(() => {
+    if (focusEventId === mockEvent.id && mapRef.current) {
+      mapRef.current.flyTo({
+        center: [mockEvent.lng, mockEvent.lat],
+        zoom: 6,
+        duration: 2000
+      });
+    }
+  }, [focusEventId]);
+
   return (
     <div className="w-full h-full relative">
       <Map
+        ref={mapRef}
         initialViewState={{
           longitude: 30,
           latitude: 40,
