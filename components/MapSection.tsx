@@ -26,7 +26,8 @@ export function MapSection({ onEventClick, showOverlays = true }: MapSectionProp
     country: 'RUSSIA VS UKRAINE',
     escalation: 7.4,
     type: 'ARTILLERY',
-    time: '12m ago'
+    time: '12m ago',
+    isNew: true
   };
 
   return (
@@ -43,12 +44,17 @@ export function MapSection({ onEventClick, showOverlays = true }: MapSectionProp
       >
         {/* Example marker */}
         <Marker longitude={mockEvent.lng} latitude={mockEvent.lat} anchor="center">
-          <div 
-            className="w-3 h-3 bg-[#FF3B30] rounded-full cursor-pointer hover:ring-2 ring-white transition-all"
-            onClick={() => onEventClick(mockEvent.id)}
-            onMouseEnter={(e) => setHoverInfo({ x: e.clientX, y: e.clientY, event: mockEvent })}
-            onMouseLeave={() => setHoverInfo(null)}
-          />
+          <div className="relative">
+            {mockEvent.isNew && (
+              <div className="absolute -inset-1 bg-[#FF3B30] rounded-full animate-ping opacity-75" />
+            )}
+            <div 
+              className="relative w-3 h-3 bg-[#FF3B30] rounded-full cursor-pointer hover:ring-2 ring-white transition-all"
+              onClick={() => onEventClick(mockEvent.id)}
+              onMouseEnter={(e) => setHoverInfo({ x: e.clientX, y: e.clientY, event: mockEvent })}
+              onMouseLeave={() => setHoverInfo(null)}
+            />
+          </div>
         </Marker>
       </Map>
 

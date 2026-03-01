@@ -16,7 +16,8 @@ const mockData = [
     actors: 'Russia vs Ukraine',
     casualties: 14,
     time: '12m ago',
-    source: 'Reuters'
+    source: 'Reuters',
+    isNew: true
   },
   {
     id: 'event-2',
@@ -28,7 +29,8 @@ const mockData = [
     actors: 'China vs US',
     casualties: 0,
     time: '45m ago',
-    source: 'OSINT'
+    source: 'OSINT',
+    isNew: false
   },
   {
     id: 'event-3',
@@ -40,7 +42,8 @@ const mockData = [
     actors: 'Multiple',
     casualties: 0,
     time: '2h ago',
-    source: 'Al Jazeera'
+    source: 'Al Jazeera',
+    isNew: false
   },
   {
     id: 'event-4',
@@ -52,7 +55,8 @@ const mockData = [
     actors: 'N/A',
     casualties: 0,
     time: '4h ago',
-    source: 'Internal'
+    source: 'Internal',
+    isNew: false
   }
 ];
 
@@ -96,9 +100,14 @@ export function IntelligenceGrid({ onEventClick, selectedEventId }: Intelligence
                 className={`p-3 border-b border-[#1A1A1A] border-l-2 cursor-pointer transition-colors hover:bg-[#111] ${getBorderColor(item.escalation)} ${selectedEventId === item.id ? 'bg-[#111]' : ''}`}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-condensed uppercase tracking-[0.08em] text-[#9A9A9A] text-[10px]">
-                    {item.country}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {item.isNew && (
+                      <div className="w-1.5 h-1.5 bg-[#FF3B30] rounded-full animate-pulse" />
+                    )}
+                    <span className="font-condensed uppercase tracking-[0.08em] text-[#9A9A9A] text-[10px]">
+                      {item.country}
+                    </span>
+                  </div>
                   <span className="font-mono text-white text-[10px]">
                     ESC {item.escalation.toFixed(1)}
                   </span>
