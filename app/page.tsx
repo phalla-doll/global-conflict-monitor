@@ -11,6 +11,10 @@ export default function Home() {
   const [showOverlays, setShowOverlays] = useState(true);
   const [focusEventId, setFocusEventId] = useState<string | null>(null);
 
+  const [region, setRegion] = useState('Global');
+  const [timeFilter, setTimeFilter] = useState('24H');
+  const [viewMode, setViewMode] = useState<'Map' | 'Feed'>('Map');
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger shortcuts if user is typing in an input
@@ -37,10 +41,19 @@ export default function Home() {
 
   return (
     <main className="flex flex-col h-screen w-full bg-[#0A0A0A] text-white overflow-hidden">
-      <TopNav />
+      <TopNav 
+        region={region}
+        setRegion={setRegion}
+        timeFilter={timeFilter}
+        setTimeFilter={setTimeFilter}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+      />
       
-      <div className="flex-1 flex flex-col relative">
-        <div className="h-[50vh] w-full border-b border-[#1A1A1A] relative shrink-0">
+      <div className="flex-1 flex flex-col md:flex-col relative">
+        <div className={`w-full border-b border-[#1A1A1A] relative shrink-0 transition-all duration-300 ${
+          viewMode === 'Map' ? 'h-full md:h-[50vh]' : 'h-0 md:h-[50vh] overflow-hidden border-none md:border-solid'
+        }`}>
           <MapSection 
             onEventClick={setSelectedEventId} 
             showOverlays={showOverlays} 
@@ -48,7 +61,9 @@ export default function Home() {
           />
         </div>
         
-        <div className="h-[calc(50vh-56px)] w-full relative shrink-0">
+        <div className={`w-full relative shrink-0 transition-all duration-300 ${
+          viewMode === 'Feed' ? 'h-full md:h-[calc(50vh-56px)]' : 'h-0 md:h-[calc(50vh-56px)] overflow-hidden'
+        }`}>
           <IntelligenceGrid onEventClick={setSelectedEventId} selectedEventId={selectedEventId} />
         </div>
       </div>
