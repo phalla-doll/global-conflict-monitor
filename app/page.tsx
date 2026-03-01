@@ -22,6 +22,9 @@ export default function Home() {
         return;
       }
 
+      if (e.key === 'Escape' && selectedEventId) {
+        setSelectedEventId(null);
+      }
       if (e.key.toLowerCase() === 'm') {
         setShowOverlays(prev => !prev);
       }
